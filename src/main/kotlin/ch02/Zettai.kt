@@ -12,11 +12,12 @@ data class Zettai(val lists: Map<User, List<TodoList>>): HttpHandler {
 
     override fun invoke(request: Request): Response = routes(request)
 
-    fun showList(request: Request): Response = request
-        .let(::extractListData)
-        .let(::fetchListContent)
-        .let(::renderHtml)
-        .let(::createResponse)
+    fun showList(request: Request): Response = processFun(request)
+
+    val processFun = ::extractListData andThen
+            ::fetchListContent andThen
+            ::renderHtml andThen
+            ::createResponse
 
     fun extractListData(request: Request): Pair<User, ListName> {
         val user = request.path("user").orEmpty()
